@@ -178,6 +178,7 @@
 
 <div class="stats" id="stats">
   <div class="stat"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Total Tracked</div></div>
+  <div class="stat"><div class="stat-value" id="stat-updated" style="font-size:1rem;">—</div><div class="stat-label">Last Updated</div></div>
   <div class="stat"><div class="stat-value" id="stat-week">—</div><div class="stat-label">New This Week</div></div>
   <div class="stat"><div class="stat-value" id="stat-month">—</div><div class="stat-label">This Month</div></div>
   <div class="stat"><div class="stat-value" id="stat-top">—</div><div class="stat-label">Top Category</div></div>
@@ -262,6 +263,9 @@
     document.getElementById('stat-total').textContent = data.length;
     document.getElementById('stat-week').textContent = data.filter(d => d.found_at >= week).length;
     document.getElementById('stat-month').textContent = data.filter(d => d.found_at >= month).length;
+
+    const latest = data.map(d => d.found_at).filter(Boolean).sort().at(-1);
+    document.getElementById('stat-updated').textContent = latest ? relativeDate(latest) : '—';
 
     const counts = {};
     data.forEach(d => { counts[d.category] = (counts[d.category] || 0) + 1; });
