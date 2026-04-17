@@ -84,8 +84,32 @@ CATEGORY_RULES = [
 ]
 
 
+PH_KEYWORDS = [
+    "philippines", "philippine", "manila", "makati", "bgc", "taguig",
+    "cebu", "davao", "quezon city", "pasig", "ortigas", "alabang",
+    "bonifacio", "sm mall", "ayala mall", "robinsons", "megamall",
+    "filipino", "ph ", " ph,", "pinoy",
+]
+
+
 def url_hash(url: str) -> str:
     return hashlib.md5(url.encode()).hexdigest()
+
+
+def resolve_google_url(url: str) -> str:
+    """Follow Google News redirect to get the real article URL."""
+    if "news.google.com" not in url:
+        return url
+    try:
+        r = requests.head(url, allow_redirects=True, timeout=5)
+        return r.url if r.url and "news.google.com" not in r.url else url
+    except Exception:
+        return url
+
+
+def is_ph_relevant(title: str, description: str = "") -> bool:
+    text = (title + " " + description).lower()
+    return any(kw in text for kw in PH_KEYWORDS)
 
 
 def detect_category(text: str) -> str:
@@ -181,6 +205,12 @@ def main():
 
         if not is_relevant(article["title"], article["description"]):
             continue
+
+        if not is_ph_relevant(article["title"], article["description"]):
+            continue
+
+        # Resolve Google News redirect URLs to actual article URLs
+        article["url"] = resolve_google_url(article["url"])
 
         opening = {
             "title": article["title"],
