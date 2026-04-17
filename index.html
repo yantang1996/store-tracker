@@ -202,6 +202,11 @@
     <button class="date-btn active" data-days="0">All Time</button>
   </div>
 
+  <label style="font-size:0.8rem;color:#777;margin-left:8px;">From</label>
+  <input type="date" id="date-from" style="padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:0.875rem;" />
+  <label style="font-size:0.8rem;color:#777;">To</label>
+  <input type="date" id="date-to" style="padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:0.875rem;" />
+
   <span class="results-count" id="results-count"></span>
 </div>
 
@@ -225,6 +230,8 @@
 <script>
   let allData = [];
   let activeDays = 0;
+  let customFrom = '';
+  let customTo = '';
 
   function dateDaysAgo(n) {
     const d = new Date();
@@ -268,6 +275,8 @@
     let filtered = allData.filter(d => {
       if (category && d.category !== category) return false;
       if (cutoff && d.found_at < cutoff) return false;
+      if (customFrom && d.found_at < customFrom) return false;
+      if (customTo && d.found_at > customTo) return false;
       if (search && !d.title.toLowerCase().includes(search)) return false;
       return true;
     });
@@ -309,11 +318,32 @@
   // Event listeners
   document.getElementById('search').addEventListener('input', render);
   document.getElementById('category').addEventListener('change', render);
+  document.getElementById('date-from').addEventListener('change', e => {
+    customFrom = e.target.value;
+    // Clear quick-filter when custom dates are used
+    if (customFrom || customTo) {
+      document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+      activeDays = 0;
+    }
+    render();
+  });
+  document.getElementById('date-to').addEventListener('change', e => {
+    customTo = e.target.value;
+    if (customFrom || customTo) {
+      document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+      activeDays = 0;
+    }
+    render();
+  });
   document.querySelectorAll('.date-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       activeDays = parseInt(btn.dataset.days);
+      // Clear custom date inputs
+      customFrom = ''; customTo = '';
+      document.getElementById('date-from').value = '';
+      document.getElementById('date-to').value = '';
       render();
     });
   });
