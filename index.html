@@ -1,417 +1,248 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="light" lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StoreScale — PH Store Openings</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:          #111318;
-      --surface-low: #1a1c20;
-      --surface:     #1e2024;
-      --surface-high:#282a2e;
-      --surface-top: #333539;
-      --border:      rgba(69,70,77,0.45);
-      --primary:     #4edea3;
-      --primary-dim: #3ab88a;
-      --secondary:   #e9c349;
-      --tertiary:    #7bd0ff;
-      --on-surface:  #e2e2e8;
-      --muted:       #c6c6cd;
-      --faint:       #909097;
-      --font-head:   'Space Grotesk', sans-serif;
-      --font-body:   'Inter', sans-serif;
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>StoreScale | Philippines Store Openings Tracker</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "error-container": "#f74b6d",
+          "outline-variant": "#a5adc6",
+          "inverse-surface": "#060e20",
+          "surface-container-lowest": "#ffffff",
+          "on-tertiary": "#ffeff4",
+          "secondary": "#6249b2",
+          "on-tertiary-fixed-variant": "#6d104e",
+          "on-surface-variant": "#535b71",
+          "primary-fixed-dim": "#8885ff",
+          "on-background": "#272e42",
+          "background": "#f6f6ff",
+          "surface-container": "#e2e7ff",
+          "on-primary-fixed-variant": "#1a0099",
+          "on-secondary-fixed-variant": "#573da6",
+          "secondary-container": "#d8caff",
+          "primary-fixed": "#9795ff",
+          "on-error": "#ffefef",
+          "primary-container": "#9795ff",
+          "on-secondary-fixed": "#3a1b88",
+          "error-dim": "#a70138",
+          "on-primary-fixed": "#000000",
+          "on-secondary": "#f7f0ff",
+          "on-tertiary-fixed": "#360024",
+          "on-primary-container": "#14007e",
+          "surface-container-highest": "#d1dcff",
+          "secondary-dim": "#563ca5",
+          "surface-tint": "#4a40e0",
+          "surface-container-high": "#d9e2ff",
+          "outline": "#6f768e",
+          "tertiary-dim": "#892a65",
+          "surface-bright": "#f6f6ff",
+          "on-error-container": "#510017",
+          "surface-dim": "#c7d4fa",
+          "inverse-primary": "#8582ff",
+          "tertiary-container": "#fd8bca",
+          "secondary-fixed-dim": "#cbbaff",
+          "primary-dim": "#3d30d4",
+          "on-tertiary-container": "#610244",
+          "surface": "#f6f6ff",
+          "on-surface": "#272e42",
+          "tertiary-fixed": "#fd8bca",
+          "secondary-fixed": "#d8caff",
+          "on-secondary-container": "#4e339c",
+          "surface-container-low": "#eef0ff",
+          "surface-variant": "#d1dcff",
+          "tertiary-fixed-dim": "#ee7ebc",
+          "tertiary": "#983772",
+          "inverse-on-surface": "#959cb5",
+          "error": "#b41340",
+          "on-primary": "#f4f1ff",
+          "primary": "#4a40e0"
+        },
+        borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+        fontFamily: { headline: ["Manrope"], body: ["Inter"], label: ["Inter"] }
+      }
     }
-
-    html, body { height: 100%; background: var(--bg); color: var(--on-surface); font-family: var(--font-body); font-size: 14px; }
-
-    /* ── Layout ── */
-    .app { display: flex; height: 100vh; overflow: hidden; }
-
-    /* ── Sidebar ── */
-    .sidebar {
-      width: 220px;
-      min-width: 220px;
-      background: var(--surface-low);
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      padding: 0;
-    }
-    .sidebar-logo {
-      padding: 20px 20px 16px;
-      border-bottom: 1px solid var(--border);
-    }
-    .sidebar-logo h1 {
-      font-family: var(--font-head);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--primary);
-      letter-spacing: -0.3px;
-    }
-    .sidebar-logo p { font-size: 0.7rem; color: var(--faint); margin-top: 2px; letter-spacing: 0.3px; text-transform: uppercase; }
-
-    .sidebar-nav { padding: 12px 0; flex: 1; }
-    .nav-label { font-size: 0.65rem; font-weight: 600; color: var(--faint); text-transform: uppercase; letter-spacing: 1px; padding: 8px 20px 4px; }
-    .nav-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 9px 20px;
-      font-size: 0.8rem; font-weight: 500; color: var(--muted);
-      cursor: pointer; transition: all 0.12s;
-      border-left: 2px solid transparent;
-    }
-    .nav-item:hover { color: var(--on-surface); background: var(--surface); }
-    .nav-item.active { color: var(--primary); border-left-color: var(--primary); background: rgba(78,222,163,0.06); }
-    .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-
-    .sidebar-footer {
-      padding: 14px 20px;
-      border-top: 1px solid var(--border);
-      font-size: 0.7rem; color: var(--faint);
-    }
-    .sidebar-footer span { color: var(--primary); font-weight: 600; }
-
-    /* ── Main ── */
-    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-
-    /* ── Topbar ── */
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 28px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface-low);
-      flex-shrink: 0;
-    }
-    .topbar-title { font-family: var(--font-head); font-size: 1rem; font-weight: 600; }
-    .topbar-right { display: flex; align-items: center; gap: 16px; }
-    .last-updated {
-      font-size: 0.72rem; color: var(--faint);
-      display: flex; align-items: center; gap: 6px;
-    }
-    .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); animation: pulse 2s infinite; flex-shrink: 0; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .last-updated strong { color: var(--primary); }
-
-    /* ── KPI Row ── */
-    .kpi-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-    .kpi-card {
-      padding: 18px 24px;
-      border-right: 1px solid var(--border);
-      background: var(--surface-low);
-    }
-    .kpi-card:last-child { border-right: none; }
-    .kpi-label { font-size: 0.65rem; font-weight: 600; color: var(--faint); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
-    .kpi-value { font-family: var(--font-head); font-size: 1.75rem; font-weight: 700; color: var(--on-surface); line-height: 1; }
-    .kpi-sub { font-size: 0.7rem; color: var(--muted); margin-top: 5px; }
-    .kpi-accent { color: var(--primary); }
-    .kpi-gold { color: var(--secondary); }
-
-    /* ── Content Area ── */
-    .content { flex: 1; display: flex; overflow: hidden; }
-
-    /* ── Feed Panel ── */
-    .feed-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; border-right: 1px solid var(--border); }
-
-    /* ── Filter Bar ── */
-    .filter-bar {
-      display: flex; align-items: center; gap: 8px;
-      padding: 10px 20px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface-low);
-      flex-shrink: 0;
-      flex-wrap: wrap;
-    }
-    .filter-bar input, .filter-bar select {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--on-surface);
-      padding: 6px 10px;
-      font-size: 0.78rem;
-      font-family: var(--font-body);
-      outline: none;
-      transition: border-color 0.12s;
-    }
-    .filter-bar input { width: 200px; }
-    .filter-bar input:focus, .filter-bar select:focus { border-color: var(--primary); }
-    .filter-bar select option { background: var(--surface); }
-
-    .chip-group { display: flex; gap: 2px; }
-    .chip {
-      padding: 6px 12px;
-      font-size: 0.72rem; font-weight: 600;
-      font-family: var(--font-head);
-      text-transform: uppercase; letter-spacing: 0.5px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--faint);
-      cursor: pointer; transition: all 0.12s;
-    }
-    .chip:hover { color: var(--on-surface); border-color: var(--surface-top); }
-    .chip.active { background: var(--primary); color: #003824; border-color: var(--primary); }
-
-    .date-inputs { display: flex; align-items: center; gap: 6px; }
-    .date-inputs label { font-size: 0.7rem; color: var(--faint); }
-    .date-inputs input[type="date"] {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--on-surface);
-      padding: 6px 8px;
-      font-size: 0.75rem;
-      font-family: var(--font-body);
-      outline: none;
-      color-scheme: dark;
-    }
-    .date-inputs input[type="date"]:focus { border-color: var(--primary); }
-
-    .filter-count { margin-left: auto; font-size: 0.72rem; color: var(--faint); white-space: nowrap; }
-
-    /* ── Table ── */
-    .table-wrap { flex: 1; overflow-y: auto; }
-    .table-wrap::-webkit-scrollbar { width: 4px; }
-    .table-wrap::-webkit-scrollbar-track { background: var(--surface-low); }
-    .table-wrap::-webkit-scrollbar-thumb { background: var(--surface-top); }
-
-    table { width: 100%; border-collapse: collapse; }
-    thead { position: sticky; top: 0; z-index: 5; background: var(--surface); }
-    th {
-      padding: 10px 16px;
-      font-size: 0.65rem; font-weight: 600;
-      font-family: var(--font-head);
-      text-transform: uppercase; letter-spacing: 0.8px;
-      color: var(--faint);
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-    th.sortable { cursor: pointer; user-select: none; }
-    th.sortable:hover { color: var(--on-surface); }
-    th .arrow { margin-left: 4px; color: var(--primary); }
-
-    td {
-      padding: 11px 16px;
-      border-bottom: 1px solid rgba(69,70,77,0.25);
-      vertical-align: middle;
-      font-size: 0.8rem;
-    }
-    tr:hover td { background: rgba(78,222,163,0.03); }
-
-    .title-link {
-      color: var(--on-surface); text-decoration: none;
-      font-weight: 500; line-height: 1.4;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-    }
-    .title-link:hover { color: var(--primary); }
-
-    .source-tag { font-size: 0.68rem; color: var(--faint); margin-top: 2px; display: block; }
-
-    .badge {
-      display: inline-block; padding: 2px 8px;
-      font-size: 0.65rem; font-weight: 600;
-      font-family: var(--font-head); text-transform: uppercase; letter-spacing: 0.4px;
-      border: 1px solid;
-      white-space: nowrap;
-    }
-    .badge-Restaurant    { color: #f97316; border-color: rgba(249,115,22,0.35); background: rgba(249,115,22,0.08); }
-    .badge-Supermarket   { color: var(--primary); border-color: rgba(78,222,163,0.35); background: rgba(78,222,163,0.08); }
-    .badge-Fashion       { color: #c084fc; border-color: rgba(192,132,252,0.35); background: rgba(192,132,252,0.08); }
-    .badge-Department\ Store { color: var(--tertiary); border-color: rgba(123,208,255,0.35); background: rgba(123,208,255,0.08); }
-    .badge-Foreign\ Brand { color: var(--secondary); border-color: rgba(233,195,73,0.35); background: rgba(233,195,73,0.08); }
-    .badge-Other         { color: var(--faint); border-color: var(--border); background: transparent; }
-
-    .new-pill {
-      display: inline-block; margin-left: 6px;
-      background: var(--primary); color: #003824;
-      font-size: 0.58rem; font-weight: 700; font-family: var(--font-head);
-      padding: 1px 5px; letter-spacing: 0.5px; text-transform: uppercase;
-      vertical-align: middle;
-    }
-
-    .date-mono { font-family: 'Courier New', monospace; font-size: 0.75rem; color: var(--muted); white-space: nowrap; }
-
-    .empty, .loading {
-      text-align: center; padding: 60px;
-      color: var(--faint); font-size: 0.85rem;
-    }
-
-    /* ── Side Panel ── */
-    .side-panel {
-      width: 260px; min-width: 260px;
-      display: flex; flex-direction: column;
-      overflow-y: auto;
-      background: var(--surface-low);
-    }
-    .side-panel::-webkit-scrollbar { width: 3px; }
-    .side-panel::-webkit-scrollbar-thumb { background: var(--surface-top); }
-
-    .panel-section { border-bottom: 1px solid var(--border); padding: 16px; }
-    .panel-title {
-      font-size: 0.65rem; font-weight: 600; color: var(--faint);
-      text-transform: uppercase; letter-spacing: 0.8px;
-      margin-bottom: 12px; font-family: var(--font-head);
-    }
-
-    /* Category breakdown bars */
-    .cat-row { margin-bottom: 10px; }
-    .cat-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
-    .cat-name { font-size: 0.75rem; color: var(--muted); }
-    .cat-pct { font-size: 0.72rem; font-family: 'Courier New', monospace; color: var(--on-surface); font-weight: 600; }
-    .cat-bar-bg { height: 3px; background: var(--surface-top); }
-    .cat-bar-fill { height: 3px; transition: width 0.4s ease; }
-
-    /* Recent highlights */
-    .highlight-item {
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(69,70,77,0.2);
-    }
-    .highlight-item:last-child { border-bottom: none; }
-    .highlight-store { font-size: 0.8rem; font-weight: 600; color: var(--on-surface); }
-    .highlight-meta { font-size: 0.7rem; color: var(--faint); margin-top: 2px; }
-    .highlight-badge { margin-top: 5px; }
-  </style>
+  }
+</script>
+<style>
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+  body { font-family: 'Inter', sans-serif; }
+  h1, h2, h3, h4 { font-family: 'Manrope', sans-serif; }
+  .chip-active { background-color: #4a40e0 !important; color: #f4f1ff !important; }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: #4a40e0; }
+</style>
 </head>
-<body>
+<body class="bg-background text-on-surface selection:bg-primary-container">
 
-<div class="app">
-
-  <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <h1>StoreScale</h1>
-      <p>PH Retail Intelligence</p>
+<!-- TopNavBar -->
+<header class="w-full top-0 sticky z-50 bg-white shadow-none border-b border-surface-container">
+  <div class="flex justify-between items-center w-full px-8 py-4 max-w-[1600px] mx-auto">
+    <div class="flex items-center gap-8">
+      <span class="text-xl font-bold tracking-tighter text-slate-900">StoreScale</span>
+      <nav class="hidden md:flex items-center gap-6 font-manrope text-sm font-medium tracking-tight">
+        <a class="text-indigo-600 border-b-2 border-indigo-600 pb-1 hover:text-indigo-500 transition-colors" href="#">Feed</a>
+        <a class="text-slate-500 hover:text-indigo-500 transition-colors" href="#">Restaurants</a>
+        <a class="text-slate-500 hover:text-indigo-500 transition-colors" href="#">Retail</a>
+        <a class="text-slate-500 hover:text-indigo-500 transition-colors" href="#">Foreign Brands</a>
+      </nav>
     </div>
-    <nav class="sidebar-nav">
-      <div class="nav-label">Monitor</div>
-      <div class="nav-item active"><span class="nav-dot"></span>All Openings</div>
-      <div class="nav-item"><span class="nav-dot"></span>Restaurants</div>
-      <div class="nav-item"><span class="nav-dot"></span>Supermarkets</div>
-      <div class="nav-item"><span class="nav-dot"></span>Fashion</div>
-      <div class="nav-label" style="margin-top:8px;">Focus</div>
-      <div class="nav-item"><span class="nav-dot"></span>Foreign Brands</div>
-      <div class="nav-item"><span class="nav-dot"></span>Metro Manila</div>
-      <div class="nav-item"><span class="nav-dot"></span>Provincial</div>
-    </nav>
-    <div class="sidebar-footer">
-      Auto-refreshes daily<br/>
-      Next run: <span id="next-run">—</span>
-    </div>
-  </aside>
-
-  <!-- Main -->
-  <div class="main">
-
-    <!-- Topbar -->
-    <div class="topbar">
-      <div class="topbar-title">Store Openings Feed</div>
-      <div class="topbar-right">
-        <div class="last-updated">
-          <span class="pulse"></span>
-          Last updated: <strong id="header-updated">—</strong>
-        </div>
+    <div class="flex items-center gap-4">
+      <div class="flex items-center gap-1 text-slate-500 mr-2">
+        <button class="p-2 hover:bg-surface-container-low rounded-full transition-all">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="p-2 hover:bg-surface-container-low rounded-full transition-all">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
       </div>
-    </div>
-
-    <!-- KPI Row -->
-    <div class="kpi-row">
-      <div class="kpi-card">
-        <div class="kpi-label">Total Tracked</div>
-        <div class="kpi-value" id="stat-total">—</div>
-        <div class="kpi-sub">All time</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">New This Week</div>
-        <div class="kpi-value kpi-accent" id="stat-week">—</div>
-        <div class="kpi-sub">Last 7 days</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">This Month</div>
-        <div class="kpi-value" id="stat-month">—</div>
-        <div class="kpi-sub">Last 30 days</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Top Category</div>
-        <div class="kpi-value kpi-gold" id="stat-top" style="font-size:1.1rem;padding-top:6px;">—</div>
-        <div class="kpi-sub" id="stat-top-pct">—</div>
-      </div>
-    </div>
-
-    <!-- Content -->
-    <div class="content">
-
-      <!-- Feed Panel -->
-      <div class="feed-panel">
-        <!-- Filter Bar -->
-        <div class="filter-bar">
-          <input type="text" id="search" placeholder="Search openings…" />
-
-          <select id="category">
-            <option value="">All Categories</option>
-            <option value="Restaurant">Restaurant</option>
-            <option value="Supermarket">Supermarket</option>
-            <option value="Fashion">Fashion</option>
-            <option value="Department Store">Department Store</option>
-            <option value="Foreign Brand">Foreign Brand</option>
-            <option value="Other">Other</option>
-          </select>
-
-          <div class="chip-group">
-            <button class="chip" data-days="7">7D</button>
-            <button class="chip" data-days="30">30D</button>
-            <button class="chip active" data-days="0">All</button>
-          </div>
-
-          <div class="date-inputs">
-            <label>From</label>
-            <input type="date" id="date-from" />
-            <label>To</label>
-            <input type="date" id="date-to" />
-          </div>
-
-          <span class="filter-count" id="results-count"></span>
-        </div>
-
-        <!-- Table -->
-        <div class="table-wrap">
-          <div class="loading" id="loading">Loading openings…</div>
-          <table id="table" style="display:none">
-            <thead>
-              <tr>
-                <th style="width:45%">Store / Article</th>
-                <th>Category</th>
-                <th>Source</th>
-                <th class="sortable" data-col="published_at">Published <span class="arrow" id="sort-published"></span></th>
-                <th class="sortable" data-col="found_at">Found <span class="arrow" id="sort-found">▼</span></th>
-              </tr>
-            </thead>
-            <tbody id="tbody"></tbody>
-          </table>
-          <div class="empty" id="empty" style="display:none">No openings match this filter.</div>
-        </div>
-      </div>
-
-      <!-- Side Panel -->
-      <aside class="side-panel">
-        <div class="panel-section">
-          <div class="panel-title">Category Breakdown</div>
-          <div id="cat-breakdown"></div>
-        </div>
-        <div class="panel-section">
-          <div class="panel-title">Recent Highlights</div>
-          <div id="recent-highlights"></div>
-        </div>
-      </aside>
-
     </div>
   </div>
-</div>
+</header>
+
+<main class="max-w-[1600px] mx-auto px-8 py-8">
+
+  <!-- Header -->
+  <div class="mb-10">
+    <h1 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">Philippines Store Openings</h1>
+    <p class="text-on-surface-variant max-w-2xl">Real-time tracking of retail growth, new franchises, and upcoming commercial spaces across the archipelago.</p>
+  </div>
+
+  <!-- Stats Bar -->
+  <section class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-10">
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-surface-container-low shadow-sm hover:translate-y-[-2px] transition-transform duration-200">
+      <p class="text-xs font-bold tracking-widest text-outline uppercase mb-1">Total Tracked</p>
+      <h3 class="text-3xl font-extrabold text-on-surface" id="stat-total">—</h3>
+      <div class="mt-2 flex items-center text-xs font-medium text-primary">
+        <span class="material-symbols-outlined text-sm mr-1">trending_up</span> All time
+      </div>
+    </div>
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-surface-container-low shadow-sm hover:translate-y-[-2px] transition-transform duration-200">
+      <p class="text-xs font-bold tracking-widest text-outline uppercase mb-1">New This Week</p>
+      <h3 class="text-3xl font-extrabold text-on-surface" id="stat-week">—</h3>
+      <div class="mt-2 flex items-center text-xs font-medium text-emerald-600">
+        <span class="material-symbols-outlined text-sm mr-1">fiber_new</span> Last 7 days
+      </div>
+    </div>
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-surface-container-low shadow-sm hover:translate-y-[-2px] transition-transform duration-200">
+      <p class="text-xs font-bold tracking-widest text-outline uppercase mb-1">New This Month</p>
+      <h3 class="text-3xl font-extrabold text-on-surface" id="stat-month">—</h3>
+      <div class="mt-2 flex items-center text-xs font-medium text-on-surface-variant">Last 30 days</div>
+    </div>
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-surface-container-low shadow-sm hover:translate-y-[-2px] transition-transform duration-200">
+      <p class="text-xs font-bold tracking-widest text-outline uppercase mb-1">Top Category</p>
+      <h3 class="text-3xl font-extrabold text-on-surface" id="stat-top">—</h3>
+      <div class="mt-2 flex items-center text-xs font-medium text-secondary" id="stat-top-pct">—</div>
+    </div>
+    <div class="bg-surface-container-lowest p-6 rounded-xl border border-surface-container-low shadow-sm hover:translate-y-[-2px] transition-transform duration-200 border-l-4 border-l-primary">
+      <p class="text-xs font-bold tracking-widest text-outline uppercase mb-1">Last Updated</p>
+      <h3 class="text-xl font-bold text-on-surface mt-1" id="stat-updated">—</h3>
+      <div class="mt-4 flex items-center text-xs font-medium text-on-surface-variant italic">
+        <span class="material-symbols-outlined text-sm mr-1">sync</span> Daily auto-refresh
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters -->
+  <section class="bg-surface-container-low p-6 rounded-xl mb-8 flex flex-col md:flex-row gap-4 items-end flex-wrap">
+    <div class="flex-1 w-full min-w-[180px]">
+      <label class="block text-[10px] font-bold tracking-[0.1em] text-outline uppercase mb-2">Search Records</label>
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+        <input id="search" class="w-full pl-10 pr-4 py-2.5 bg-surface-container-lowest border-0 rounded-lg text-sm focus:ring-2 focus:ring-primary transition-all shadow-sm" placeholder="Search by brand, location, or keyword..." type="text"/>
+      </div>
+    </div>
+    <div class="w-full md:w-48">
+      <label class="block text-[10px] font-bold tracking-[0.1em] text-outline uppercase mb-2">Category</label>
+      <div class="relative">
+        <select id="category" class="w-full appearance-none bg-surface-container-lowest border-0 rounded-lg py-2.5 px-4 text-sm focus:ring-2 focus:ring-primary shadow-sm pr-10">
+          <option value="">All Categories</option>
+          <option value="Restaurant">Restaurant</option>
+          <option value="Supermarket">Supermarket</option>
+          <option value="Fashion">Fashion</option>
+          <option value="Department Store">Department Store</option>
+          <option value="Foreign Brand">Foreign Brand</option>
+          <option value="Other">Other</option>
+        </select>
+        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+      </div>
+    </div>
+    <div class="w-full md:w-auto">
+      <label class="block text-[10px] font-bold tracking-[0.1em] text-outline uppercase mb-2">Timeline</label>
+      <div class="flex bg-surface-container-lowest p-1 rounded-lg shadow-sm gap-1">
+        <button class="chip px-4 py-1.5 text-xs font-semibold rounded-md text-on-surface-variant hover:bg-surface-container transition-colors" data-days="7">7D</button>
+        <button class="chip px-4 py-1.5 text-xs font-semibold rounded-md text-on-surface-variant hover:bg-surface-container transition-colors" data-days="30">30D</button>
+        <button class="chip chip-active px-4 py-1.5 text-xs font-semibold rounded-md" data-days="0">All</button>
+      </div>
+    </div>
+    <div class="w-full md:w-auto">
+      <label class="block text-[10px] font-bold tracking-[0.1em] text-outline uppercase mb-2">Custom Range</label>
+      <div class="flex items-center gap-2">
+        <input id="date-from" type="date" class="bg-surface-container-lowest border-0 rounded-lg py-2.5 px-3 text-sm shadow-sm focus:ring-2 focus:ring-primary"/>
+        <span class="text-outline text-xs">to</span>
+        <input id="date-to" type="date" class="bg-surface-container-lowest border-0 rounded-lg py-2.5 px-3 text-sm shadow-sm focus:ring-2 focus:ring-primary"/>
+      </div>
+    </div>
+    <div class="md:ml-auto text-xs text-on-surface-variant self-end pb-1" id="results-count"></div>
+  </section>
+
+  <!-- Table -->
+  <div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm border border-surface-container-low">
+    <div class="overflow-x-auto">
+      <div class="px-6 py-10 text-center text-on-surface-variant" id="loading">Loading openings…</div>
+      <table class="w-full text-left border-collapse" id="table" style="display:none">
+        <thead class="bg-surface-container-low border-b border-surface-container">
+          <tr>
+            <th class="px-6 py-4 text-[10px] font-bold text-outline tracking-widest uppercase">Article Title</th>
+            <th class="px-6 py-4 text-[10px] font-bold text-outline tracking-widest uppercase">Category</th>
+            <th class="px-6 py-4 text-[10px] font-bold text-outline tracking-widest uppercase">Source</th>
+            <th class="sortable px-6 py-4 text-[10px] font-bold text-outline tracking-widest uppercase" data-col="published_at">
+              Published Date <span id="sort-published"></span>
+            </th>
+            <th class="sortable px-6 py-4 text-[10px] font-bold text-outline tracking-widest uppercase" data-col="found_at">
+              Date Found <span id="sort-found">▼</span>
+            </th>
+            <th class="px-6 py-4 text-[10px] font-bold text-outline tracking-widest uppercase text-right">Link</th>
+          </tr>
+        </thead>
+        <tbody id="tbody" class="divide-y divide-surface-container-low"></tbody>
+      </table>
+      <div class="px-6 py-10 text-center text-on-surface-variant" id="empty" style="display:none">No openings match this filter.</div>
+    </div>
+    <!-- Pagination -->
+    <div class="px-6 py-4 border-t border-surface-container bg-surface-container-low flex items-center justify-between" id="pagination-bar">
+      <p class="text-xs text-on-surface-variant" id="pagination-info"></p>
+      <div class="flex gap-2" id="pagination-btns"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Footer insight -->
+<footer class="max-w-[1600px] mx-auto px-8 pb-12 mt-8">
+  <div class="bg-surface-container-highest rounded-xl p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary"></div>
+    <div class="flex-1">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="material-symbols-outlined text-primary">auto_awesome</span>
+        <h4 class="text-lg font-bold text-on-surface">About This Tool</h4>
+      </div>
+      <p class="text-on-surface-variant leading-relaxed">
+        StoreScale automatically scans Google News and Philippine business publications daily for store and restaurant opening announcements. Data is refreshed every morning at 10AM Manila time via GitHub Actions.
+      </p>
+    </div>
+  </div>
+  <div class="mt-8 pt-6 border-t border-surface-container text-center">
+    <p class="text-xs text-outline tracking-wider font-medium">© 2026 StoreScale — Philippines Retail Intelligence. Auto-updated daily.</p>
+  </div>
+</footer>
 
 <script>
   let allData = [];
@@ -420,14 +251,16 @@
   let customTo = '';
   let sortCol = 'found_at';
   let sortDir = 'desc';
+  const PAGE_SIZE = 25;
+  let currentPage = 1;
 
   const CAT_COLORS = {
-    'Restaurant':       '#f97316',
-    'Supermarket':      '#4edea3',
-    'Fashion':          '#c084fc',
-    'Department Store': '#7bd0ff',
-    'Foreign Brand':    '#e9c349',
-    'Other':            '#909097',
+    'Restaurant':       'bg-secondary-container text-on-secondary-container',
+    'Supermarket':      'bg-green-100 text-green-800',
+    'Fashion':          'bg-purple-100 text-purple-800',
+    'Department Store': 'bg-blue-100 text-blue-800',
+    'Foreign Brand':    'bg-amber-100 text-amber-800',
+    'Other':            'bg-surface-container-highest text-on-surface-variant',
   };
 
   function dateDaysAgo(n) {
@@ -436,190 +269,188 @@
     return d.toISOString().slice(0, 10);
   }
 
-  function relativeDate(dateStr) {
-    if (!dateStr) return '—';
-    const diff = Math.floor((Date.now() - new Date(dateStr)) / 86400000);
+  function relativeDate(s) {
+    if (!s) return '—';
+    const diff = Math.floor((Date.now() - new Date(s)) / 86400000);
     if (diff === 0) return 'Today';
     if (diff === 1) return 'Yesterday';
     if (diff < 7) return `${diff}d ago`;
-    if (diff < 30) return `${Math.floor(diff / 7)}w ago`;
-    return dateStr;
+    return s;
   }
 
-  function isNew(dateStr) {
-    if (!dateStr) return false;
-    return Math.floor((Date.now() - new Date(dateStr)) / 86400000) <= 2;
-  }
-
-  function nextRunTime() {
-    const now = new Date();
-    const next = new Date();
-    next.setUTCHours(2, 0, 0, 0);
-    if (next <= now) next.setUTCDate(next.getUTCDate() + 1);
-    const h = Math.floor((next - now) / 3600000);
-    const m = Math.floor(((next - now) % 3600000) / 60000);
-    return `in ${h}h ${m}m`;
+  function isNew(s) {
+    return s && Math.floor((Date.now() - new Date(s)) / 86400000) <= 2;
   }
 
   function updateStats(data) {
     const week  = dateDaysAgo(7);
     const month = dateDaysAgo(30);
-    document.getElementById('stat-total').textContent = data.length.toLocaleString();
-    document.getElementById('stat-week').textContent  = data.filter(d => d.found_at >= week).length;
-    document.getElementById('stat-month').textContent = data.filter(d => d.found_at >= month).length;
+    document.getElementById('stat-total').textContent  = data.length.toLocaleString();
+    document.getElementById('stat-week').textContent   = data.filter(d => d.found_at >= week).length;
+    document.getElementById('stat-month').textContent  = data.filter(d => d.found_at >= month).length;
 
     const latest = data.map(d => d.found_at).filter(Boolean).sort().at(-1);
-    document.getElementById('header-updated').textContent = latest ? relativeDate(latest) : '—';
-    document.getElementById('next-run').textContent = nextRunTime();
+    document.getElementById('stat-updated').textContent = latest ? relativeDate(latest) : '—';
 
     const counts = {};
     data.forEach(d => { counts[d.category] = (counts[d.category] || 0) + 1; });
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-    const top = sorted[0];
+    const top = Object.entries(counts).sort((a,b) => b[1]-a[1])[0];
     if (top) {
-      document.getElementById('stat-top').textContent = top[0];
-      document.getElementById('stat-top-pct').textContent = `${Math.round(top[1] / data.length * 100)}% of total`;
+      document.getElementById('stat-top').textContent     = top[0];
+      document.getElementById('stat-top-pct').textContent = `${Math.round(top[1]/data.length*100)}% of total`;
     }
-
-    // Category breakdown
-    const breakdown = document.getElementById('cat-breakdown');
-    breakdown.innerHTML = sorted.map(([cat, cnt]) => {
-      const pct = Math.round(cnt / data.length * 100);
-      const color = CAT_COLORS[cat] || '#909097';
-      return `<div class="cat-row">
-        <div class="cat-header">
-          <span class="cat-name">${cat}</span>
-          <span class="cat-pct">${pct}%</span>
-        </div>
-        <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${pct}%;background:${color}"></div></div>
-      </div>`;
-    }).join('');
-
-    // Recent highlights — 5 newest
-    const recent = [...data].sort((a,b) => (b.found_at||'').localeCompare(a.found_at||'')).slice(0, 5);
-    document.getElementById('recent-highlights').innerHTML = recent.map(d => `
-      <div class="highlight-item">
-        <div class="highlight-store">${d.title.length > 60 ? d.title.slice(0,60)+'…' : d.title}</div>
-        <div class="highlight-meta">${d.source} · ${relativeDate(d.found_at)}</div>
-        <div class="highlight-badge"><span class="badge badge-${d.category}">${d.category}</span></div>
-      </div>`).join('');
   }
 
-  function render() {
+  function getFiltered() {
     const search   = document.getElementById('search').value.toLowerCase();
     const category = document.getElementById('category').value;
     const cutoff   = activeDays > 0 ? dateDaysAgo(activeDays) : null;
 
-    let filtered = allData.filter(d => {
+    return allData.filter(d => {
       if (category && d.category !== category) return false;
       if (cutoff && d.found_at < cutoff) return false;
       if (customFrom && d.found_at < customFrom) return false;
       if (customTo && d.found_at > customTo) return false;
       if (search && !d.title.toLowerCase().includes(search)) return false;
       return true;
-    });
-
-    filtered.sort((a, b) => {
-      const av = a[sortCol] || '';
-      const bv = b[sortCol] || '';
+    }).sort((a, b) => {
+      const av = a[sortCol] || '', bv = b[sortCol] || '';
       return sortDir === 'desc' ? bv.localeCompare(av) : av.localeCompare(bv);
     });
+  }
+
+  function render() {
+    const filtered = getFiltered();
+    const total    = filtered.length;
+    const pages    = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (currentPage > pages) currentPage = 1;
 
     document.getElementById('results-count').textContent =
-      `${filtered.length.toLocaleString()} result${filtered.length !== 1 ? 's' : ''}`;
+      `${total.toLocaleString()} result${total !== 1 ? 's' : ''}`;
 
     const tbody = document.getElementById('tbody');
     tbody.innerHTML = '';
 
-    if (filtered.length === 0) {
-      document.getElementById('table').style.display = 'none';
-      document.getElementById('empty').style.display = 'block';
+    if (total === 0) {
+      document.getElementById('table').style.display  = 'none';
+      document.getElementById('empty').style.display  = 'block';
+      document.getElementById('pagination-bar').style.display = 'none';
       return;
     }
 
-    document.getElementById('table').style.display = 'table';
-    document.getElementById('empty').style.display = 'none';
+    document.getElementById('table').style.display  = 'table';
+    document.getElementById('empty').style.display  = 'none';
+    document.getElementById('pagination-bar').style.display = 'flex';
 
-    filtered.forEach(d => {
+    const page = filtered.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
+    page.forEach((d, i) => {
+      const catClass = CAT_COLORS[d.category] || CAT_COLORS['Other'];
+      const isFirst  = i === 0 && isNew(d.found_at);
       const tr = document.createElement('tr');
+      tr.className = 'hover:bg-surface-container-low transition-colors group';
       tr.innerHTML = `
-        <td>
-          <a class="title-link" href="${d.url}" target="_blank" rel="noopener">${d.title}</a>
-          ${isNew(d.found_at) ? '<span class="new-pill">New</span>' : ''}
-          <span class="source-tag">${d.source}</span>
+        <td class="px-6 py-5">
+          <div class="flex items-center gap-3">
+            ${isFirst ? '<div class="flex-shrink-0 w-2 h-2 rounded-full bg-primary"></div>' : '<div class="w-2"></div>'}
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-sm font-semibold text-on-surface">${d.title}</span>
+                ${isNew(d.found_at) ? '<span class="bg-primary-container text-on-primary-container text-[10px] px-1.5 py-0.5 rounded font-bold uppercase tracking-tighter">New</span>' : ''}
+              </div>
+            </div>
+          </div>
         </td>
-        <td><span class="badge badge-${d.category}">${d.category}</span></td>
-        <td class="date-mono">${d.source}</td>
-        <td class="date-mono">${d.published_at || '—'}</td>
-        <td class="date-mono">${relativeDate(d.found_at)}</td>
-      `;
+        <td class="px-6 py-5">
+          <span class="${catClass} text-xs font-medium px-3 py-1 rounded-full">${d.category}</span>
+        </td>
+        <td class="px-6 py-5">
+          <div class="flex items-center gap-2 text-sm text-on-surface-variant">
+            <span class="material-symbols-outlined text-lg">news</span>${d.source}
+          </div>
+        </td>
+        <td class="px-6 py-5 text-sm text-on-surface-variant">${d.published_at || '—'}</td>
+        <td class="px-6 py-5 text-sm text-on-surface-variant">${relativeDate(d.found_at)}</td>
+        <td class="px-6 py-5 text-right">
+          <a href="${d.url}" target="_blank" rel="noopener" class="text-outline-variant hover:text-primary transition-colors">
+            <span class="material-symbols-outlined">open_in_new</span>
+          </a>
+        </td>`;
       tbody.appendChild(tr);
     });
+
+    // Pagination info
+    const start = (currentPage-1)*PAGE_SIZE + 1;
+    const end   = Math.min(currentPage*PAGE_SIZE, total);
+    document.getElementById('pagination-info').textContent =
+      `Showing ${start.toLocaleString()} to ${end.toLocaleString()} of ${total.toLocaleString()} entries`;
+
+    // Pagination buttons
+    const btns = document.getElementById('pagination-btns');
+    btns.innerHTML = '';
+    const base = 'px-3 py-1 rounded-lg text-xs font-bold border border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors';
+    const active = 'px-3 py-1 rounded-lg bg-primary text-on-primary text-xs font-bold';
+
+    const addBtn = (label, page, icon) => {
+      const b = document.createElement('button');
+      b.className = page === currentPage ? active : base;
+      b.innerHTML = icon
+        ? `<span class="material-symbols-outlined text-sm">${icon}</span>`
+        : label;
+      if (page) b.addEventListener('click', () => { currentPage = page; render(); });
+      else b.disabled = true;
+      btns.appendChild(b);
+    };
+
+    addBtn('', currentPage > 1 ? currentPage-1 : null, 'chevron_left');
+    const range = [];
+    for (let p = Math.max(1, currentPage-1); p <= Math.min(pages, currentPage+1); p++) range.push(p);
+    if (range[0] > 1) { addBtn('1', 1); if (range[0] > 2) { const e = document.createElement('span'); e.className='px-1 text-outline'; e.textContent='…'; btns.appendChild(e); } }
+    range.forEach(p => addBtn(p, p));
+    if (range.at(-1) < pages) { if (range.at(-1) < pages-1) { const e = document.createElement('span'); e.className='px-1 text-outline'; e.textContent='…'; btns.appendChild(e); } addBtn(pages, pages); }
+    addBtn('', currentPage < pages ? currentPage+1 : null, 'chevron_right');
   }
 
-  // Sidebar nav filter shortcut
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      const text = item.textContent.trim();
-      const catMap = {
-        'Restaurants': 'Restaurant', 'Supermarkets': 'Supermarket',
-        'Fashion': 'Fashion', 'Foreign Brands': 'Foreign Brand',
-      };
-      const cat = catMap[text] || '';
-      document.getElementById('category').value = cat;
-      render();
-    });
-  });
-
-  // Filter events
-  document.getElementById('search').addEventListener('input', render);
-  document.getElementById('category').addEventListener('change', render);
+  // Events
+  document.getElementById('search').addEventListener('input', () => { currentPage=1; render(); });
+  document.getElementById('category').addEventListener('change', () => { currentPage=1; render(); });
 
   document.getElementById('date-from').addEventListener('change', e => {
     customFrom = e.target.value;
-    if (customFrom || customTo) {
-      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-      activeDays = 0;
-    }
-    render();
+    if (customFrom || customTo) { document.querySelectorAll('.chip').forEach(c => { c.classList.remove('chip-active'); c.classList.add('text-on-surface-variant'); }); activeDays = 0; }
+    currentPage=1; render();
   });
   document.getElementById('date-to').addEventListener('change', e => {
     customTo = e.target.value;
-    if (customFrom || customTo) {
-      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-      activeDays = 0;
-    }
-    render();
+    if (customFrom || customTo) { document.querySelectorAll('.chip').forEach(c => { c.classList.remove('chip-active'); c.classList.add('text-on-surface-variant'); }); activeDays = 0; }
+    currentPage=1; render();
   });
 
   document.querySelectorAll('.chip').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.chip').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      document.querySelectorAll('.chip').forEach(b => { b.classList.remove('chip-active'); b.classList.add('text-on-surface-variant'); });
+      btn.classList.add('chip-active'); btn.classList.remove('text-on-surface-variant');
       activeDays = parseInt(btn.dataset.days);
       customFrom = ''; customTo = '';
       document.getElementById('date-from').value = '';
       document.getElementById('date-to').value = '';
-      render();
+      currentPage=1; render();
     });
   });
 
   document.querySelectorAll('.sortable').forEach(th => {
     th.addEventListener('click', () => {
       const col = th.dataset.col;
-      sortDir = sortCol === col ? (sortDir === 'desc' ? 'asc' : 'desc') : 'desc';
+      sortDir = sortCol === col ? (sortDir==='desc'?'asc':'desc') : 'desc';
       sortCol = col;
       const arrow = sortDir === 'desc' ? '▼' : '▲';
       document.getElementById('sort-published').textContent = '';
       document.getElementById('sort-found').textContent = '';
       document.getElementById(col === 'found_at' ? 'sort-found' : 'sort-published').textContent = arrow;
-      render();
+      currentPage=1; render();
     });
   });
 
-  // Load data
+  // Load
   fetch('data/openings.json?v=' + Date.now())
     .then(r => r.json())
     .then(data => {
@@ -629,7 +460,7 @@
       render();
     })
     .catch(() => {
-      document.getElementById('loading').textContent = 'Could not load data. Run the fetch script first.';
+      document.getElementById('loading').textContent = 'Could not load data.';
     });
 </script>
 </body>
