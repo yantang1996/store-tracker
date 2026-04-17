@@ -180,8 +180,8 @@
             <th class="px-4 py-2.5 text-[10px] font-bold text-outline tracking-widest uppercase">Article Title</th>
             <th class="px-4 py-2.5 text-[10px] font-bold text-outline tracking-widest uppercase">Category</th>
             <th class="px-4 py-2.5 text-[10px] font-bold text-outline tracking-widest uppercase">Source</th>
-            <th class="sortable px-4 py-2.5 text-[10px] font-bold text-outline tracking-widest uppercase" data-col="published_at">Published <span id="sort-published"></span></th>
-            <th class="sortable px-4 py-2.5 text-[10px] font-bold text-outline tracking-widest uppercase" data-col="found_at">Found <span id="sort-found">▼</span></th>
+            <th class="sortable px-4 py-2.5 text-[10px] font-bold text-outline tracking-widest uppercase" data-col="published_at">Published <span id="sort-published">▼</span></th>
+            <th class="sortable px-4 py-2.5 text-[10px] font-bold text-outline tracking-widest uppercase" data-col="found_at">Found <span id="sort-found"></span></th>
           </tr>
         </thead>
         <tbody id="tbody" class="divide-y divide-surface-container-low"></tbody>
@@ -221,7 +221,7 @@
   let activeDays = 0;
   let customFrom = '';
   let customTo = '';
-  let sortCol = 'found_at';
+  let sortCol = 'published_at';
   let sortDir = 'desc';
   const PAGE_SIZE = 25;
   let currentPage = 1;
