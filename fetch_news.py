@@ -20,6 +20,20 @@ GOOGLE_NEWS_QUERIES = [
     "opens Makati Philippines",
     "grand opening Philippines",
     "retail opens Philippines",
+    # Mall / commercial development
+    "new mall Philippines 2026",
+    "mall development Philippines",
+    "commercial development Philippines retail",
+    "retail park Philippines",
+    "groundbreaking mall Philippines",
+    "mixed use development Philippines",
+    # Brand expansion announcements
+    "brand enters Philippines",
+    "brand announces Philippines entry",
+    "expanding to Philippines",
+    "entering Philippine market",
+    "to open in Philippines 2026",
+    "international brand Philippines debut",
 ]
 
 PH_RSS_FEEDS = [
@@ -34,6 +48,9 @@ INCLUDE_KEYWORDS = [
     "opens", "opening", "grand opening", "new store", "new branch",
     "new outlet", "launches", "first store", "debut", "inaugurates",
     "now open", "soft opening", "opened", "will open", "set to open",
+    "enters", "entering", "announces entry", "expanding to",
+    "groundbreaking", "to open", "coming soon", "coming to philippines",
+    "mall development", "commercial development", "retail park",
 ]
 
 EXCLUDE_KEYWORDS = [
@@ -43,12 +60,23 @@ EXCLUDE_KEYWORDS = [
 ]
 
 CATEGORY_RULES = [
+    ("Brand Announcement", [
+        "enters philippines", "entering the philippine", "expanding to the philippines",
+        "expanding to philippines", "announces philippine", "announces ph entry",
+        "to debut in", "coming to the philippines", "coming to manila",
+        "first time in the philippines", "international brand", "entering philippine market",
+    ]),
+    ("Mall Development", [
+        "mall development", "retail park", "commercial development",
+        "mixed-use", "mixed use development", "groundbreaking",
+        "new mall", "shopping center development", "commercial complex",
+    ]),
     ("Restaurant", ["restaurant", "cafe", "coffee", "dining", "eatery", "bistro",
                     "food hall", "fastfood", "fast food", "pizza", "burger",
                     "ramen", "sushi", "bar and grill", "bar & grill"]),
     ("Supermarket", ["supermarket", "grocery", "hypermarket", "fresh market",
                      "puregold", "savemore", "robinsons supermarket", "walter mart"]),
-    ("Department Store", ["department store", "mall", "sm ", "ayala mall",
+    ("Department Store", ["department store", "sm ", "ayala mall",
                           "robinsons place", "megamall", "landmark", "rustans"]),
     ("Fashion", ["fashion", "apparel", "clothing", "shoes", "footwear",
                  "boutique", "wear", "denim", "uniqlo", "zara", "h&m",
