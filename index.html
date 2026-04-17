@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PH Store Openings Tracker</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1a1a2e;
+      color: white;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.3px; }
+    header p { font-size: 0.8rem; color: #aaa; margin-top: 2px; }
+
+    .stats {
+      display: flex;
+      gap: 12px;
+      padding: 16px 32px;
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      flex-wrap: wrap;
+    }
+    .stat {
+      background: #f5f5f5;
+      border-radius: 8px;
+      padding: 10px 18px;
+      text-align: center;
+      min-width: 120px;
+    }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: #1a1a2e; }
+    .stat-label { font-size: 0.72rem; color: #777; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      padding: 16px 32px;
+      background: white;
+      border-bottom: 1px solid #e5e5e5;
+      flex-wrap: wrap;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .filters input, .filters select {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      outline: none;
+      background: white;
+    }
+    .filters input:focus, .filters select:focus { border-color: #1a1a2e; }
+    .filters input { width: 220px; }
+
+    .date-btns { display: flex; gap: 4px; }
+    .date-btn {
+      padding: 8px 14px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      background: white;
+      transition: all 0.15s;
+    }
+    .date-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+
+    .results-count {
+      margin-left: auto;
+      font-size: 0.8rem;
+      color: #777;
+      white-space: nowrap;
+    }
+
+    .container { padding: 24px 32px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    thead { background: #1a1a2e; color: white; }
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+    td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafafa; }
+
+    .title-cell { max-width: 420px; }
+    .title-link {
+      color: #1a1a2e;
+      text-decoration: none;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .title-link:hover { text-decoration: underline; color: #3a3a8e; }
+    .source-tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      color: #888;
+      margin-top: 3px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-Restaurant    { background: #fde8d8; color: #b94a00; }
+    .badge-Supermarket   { background: #d8f5e0; color: #1a7a3c; }
+    .badge-Fashion       { background: #e8d8fd; color: #6a00b9; }
+    .badge-Department\ Store { background: #d8eafd; color: #0050b9; }
+    .badge-Foreign\ Brand { background: #fde8f5; color: #b9006a; }
+    .badge-Other         { background: #f0f0f0; color: #555; }
+
+    .date-cell { white-space: nowrap; color: #555; }
+    .new-pill {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #1a7a3c;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Philippines Store Openings Tracker</h1>
+    <p>Auto-updated daily · Retail, Restaurants &amp; More</p>
+  </div>
+</header>
+
+<div class="stats" id="stats">
+  <div class="stat"><div class="stat-value" id="stat-total">—</div><div class="stat-label">Total Tracked</div></div>
+  <div class="stat"><div class="stat-value" id="stat-week">—</div><div class="stat-label">New This Week</div></div>
+  <div class="stat"><div class="stat-value" id="stat-month">—</div><div class="stat-label">This Month</div></div>
+  <div class="stat"><div class="stat-value" id="stat-top">—</div><div class="stat-label">Top Category</div></div>
+</div>
+
+<div class="filters">
+  <input type="text" id="search" placeholder="Search store name or title…" />
+
+  <select id="category">
+    <option value="">All Categories</option>
+    <option value="Restaurant">Restaurant</option>
+    <option value="Supermarket">Supermarket</option>
+    <option value="Fashion">Fashion</option>
+    <option value="Department Store">Department Store</option>
+    <option value="Foreign Brand">Foreign Brand</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <div class="date-btns">
+    <button class="date-btn" data-days="7">7 Days</button>
+    <button class="date-btn" data-days="30">30 Days</button>
+    <button class="date-btn active" data-days="0">All Time</button>
+  </div>
+
+  <span class="results-count" id="results-count"></span>
+</div>
+
+<div class="container">
+  <div class="loading" id="loading">Loading openings…</div>
+  <table id="table" style="display:none">
+    <thead>
+      <tr>
+        <th>Store / Article</th>
+        <th>Category</th>
+        <th>Source</th>
+        <th>Published</th>
+        <th>Found</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="empty" id="empty" style="display:none">No openings found for this filter.</div>
+</div>
+
+<script>
+  let allData = [];
+  let activeDays = 0;
+
+  function dateDaysAgo(n) {
+    const d = new Date();
+    d.setDate(d.getDate() - n);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function relativeDate(dateStr) {
+    if (!dateStr) return '—';
+    const diff = Math.floor((Date.now() - new Date(dateStr)) / 86400000);
+    if (diff === 0) return 'Today';
+    if (diff === 1) return 'Yesterday';
+    if (diff < 7) return `${diff}d ago`;
+    if (diff < 30) return `${Math.floor(diff / 7)}w ago`;
+    return dateStr;
+  }
+
+  function isNew(dateStr) {
+    if (!dateStr) return false;
+    return Math.floor((Date.now() - new Date(dateStr)) / 86400000) <= 2;
+  }
+
+  function updateStats(data) {
+    const week = dateDaysAgo(7);
+    const month = dateDaysAgo(30);
+    document.getElementById('stat-total').textContent = data.length;
+    document.getElementById('stat-week').textContent = data.filter(d => d.found_at >= week).length;
+    document.getElementById('stat-month').textContent = data.filter(d => d.found_at >= month).length;
+
+    const counts = {};
+    data.forEach(d => { counts[d.category] = (counts[d.category] || 0) + 1; });
+    const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+    document.getElementById('stat-top').textContent = top ? top[0] : '—';
+  }
+
+  function render() {
+    const search = document.getElementById('search').value.toLowerCase();
+    const category = document.getElementById('category').value;
+    const cutoff = activeDays > 0 ? dateDaysAgo(activeDays) : null;
+
+    let filtered = allData.filter(d => {
+      if (category && d.category !== category) return false;
+      if (cutoff && d.found_at < cutoff) return false;
+      if (search && !d.title.toLowerCase().includes(search)) return false;
+      return true;
+    });
+
+    // Sort: newest found_at first
+    filtered.sort((a, b) => (b.found_at || '').localeCompare(a.found_at || ''));
+
+    document.getElementById('results-count').textContent =
+      `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
+
+    const tbody = document.getElementById('tbody');
+    tbody.innerHTML = '';
+
+    if (filtered.length === 0) {
+      document.getElementById('table').style.display = 'none';
+      document.getElementById('empty').style.display = 'block';
+      return;
+    }
+
+    document.getElementById('table').style.display = 'table';
+    document.getElementById('empty').style.display = 'none';
+
+    filtered.forEach(d => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="title-cell">
+          <a class="title-link" href="${d.url}" target="_blank" rel="noopener">${d.title}</a>
+          ${isNew(d.found_at) ? '<span class="new-pill">NEW</span>' : ''}
+        </td>
+        <td><span class="badge badge-${d.category}">${d.category}</span></td>
+        <td class="date-cell">${d.source}</td>
+        <td class="date-cell">${d.published_at || '—'}</td>
+        <td class="date-cell">${relativeDate(d.found_at)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // Event listeners
+  document.getElementById('search').addEventListener('input', render);
+  document.getElementById('category').addEventListener('change', render);
+  document.querySelectorAll('.date-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.date-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeDays = parseInt(btn.dataset.days);
+      render();
+    });
+  });
+
+  // Load data
+  fetch('data/openings.json?v=' + Date.now())
+    .then(r => r.json())
+    .then(data => {
+      allData = data;
+      document.getElementById('loading').style.display = 'none';
+      updateStats(data);
+      render();
+    })
+    .catch(() => {
+      document.getElementById('loading').textContent = 'Could not load data. Run the script first.';
+    });
+</script>
+</body>
+</html>
