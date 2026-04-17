@@ -218,8 +218,8 @@
         <th>Store / Article</th>
         <th>Category</th>
         <th>Source</th>
-        <th>Published</th>
-        <th>Found</th>
+        <th class="sortable" data-col="published_at" style="cursor:pointer;user-select:none;">Published <span id="sort-published"></span></th>
+        <th class="sortable" data-col="found_at" style="cursor:pointer;user-select:none;">Found <span id="sort-found">▼</span></th>
       </tr>
     </thead>
     <tbody id="tbody"></tbody>
@@ -232,6 +232,8 @@
   let activeDays = 0;
   let customFrom = '';
   let customTo = '';
+  let sortCol = 'found_at';
+  let sortDir = 'desc';
 
   function dateDaysAgo(n) {
     const d = new Date();
@@ -281,8 +283,11 @@
       return true;
     });
 
-    // Sort: newest found_at first
-    filtered.sort((a, b) => (b.found_at || '').localeCompare(a.found_at || ''));
+    filtered.sort((a, b) => {
+      const av = a[sortCol] || '';
+      const bv = b[sortCol] || '';
+      return sortDir === 'desc' ? bv.localeCompare(av) : av.localeCompare(bv);
+    });
 
     document.getElementById('results-count').textContent =
       `${filtered.length} result${filtered.length !== 1 ? 's' : ''}`;
@@ -344,6 +349,23 @@
       customFrom = ''; customTo = '';
       document.getElementById('date-from').value = '';
       document.getElementById('date-to').value = '';
+      render();
+    });
+  });
+
+  document.querySelectorAll('.sortable').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if (sortCol === col) {
+        sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+      } else {
+        sortCol = col;
+        sortDir = 'desc';
+      }
+      const arrow = sortDir === 'desc' ? '▼' : '▲';
+      document.getElementById('sort-published').textContent = '';
+      document.getElementById('sort-found').textContent = '';
+      document.getElementById('sort-' + (col === 'found_at' ? 'found' : 'published')).textContent = arrow;
       render();
     });
   });
