@@ -34,6 +34,18 @@ GOOGLE_NEWS_QUERIES = [
     "entering Philippine market",
     "to open in Philippines 2026",
     "international brand Philippines debut",
+    # Hotel openings
+    "hotel opening Philippines 2026",
+    "hotel opens Philippines",
+    "new hotel Manila 2026",
+    "resort opens Philippines",
+    "hotel inaugurated Philippines",
+    # Hospital / healthcare openings
+    "hospital opening Philippines 2026",
+    "hospital opens Philippines",
+    "medical center opens Philippines",
+    "new hospital Manila 2026",
+    "healthcare facility opens Philippines",
 ]
 
 PH_RSS_FEEDS = [
@@ -81,6 +93,15 @@ CATEGORY_RULES = [
     ("Fashion", ["fashion", "apparel", "clothing", "shoes", "footwear",
                  "boutique", "wear", "denim", "uniqlo", "zara", "h&m",
                  "forever 21", "levi", "nike", "adidas", "vans"]),
+    ("Hotel", [
+        "hotel", "resort", "inn", "hostel", "accommodation",
+        "lodging", "bed and breakfast", "b&b", "serviced apartment",
+    ]),
+    ("Hospital", [
+        "hospital", "medical center", "medical centre", "health center",
+        "healthcare facility", "maternity", "wellness center",
+        "specialty clinic", "diagnostic center", "medical complex",
+    ]),
 ]
 
 
